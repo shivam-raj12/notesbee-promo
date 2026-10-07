@@ -96,6 +96,7 @@ def main():
   out_path.parent.mkdir(parents=True, exist_ok=True)
 
   # Added -af alimiter to guarantee AAC bitstream stays below -0.3 dBFS threshold
+  # -af "volume=-2.0dB,alimiter=limit=-1.5dB" guarantees AAC peak stays under -0.3 dBFS
   run([
       "ffmpeg",
       "-y",
@@ -112,11 +113,13 @@ def main():
       "-c:v",
       "copy",
       "-af",
-      "alimiter=limit=-1.2dB:attack=5:release=50:asc=1",
+      "volume=-2.0dB,alimiter=limit=-1.5dB:attack=5:release=50:asc=1",
       "-c:a",
       "aac",
       "-b:a",
       "192k",
+      "-ar",
+      "48000",
       "-shortest",
       "-movflags",
       "+faststart",
