@@ -42,6 +42,7 @@ function setO(el, o) {
 
 class Camera {
     constructor() {}
+    at(t, x, y, s = 1) { return this; }
     apply(t, world) {
         world.style.transform = "none";
         return { x: 540, y: 960, s: 1 };
