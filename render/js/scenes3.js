@@ -1,10 +1,4 @@
-/* Scenes 7-14 — Features & Play Store CTA:
- * S7: AI Note Enhancer (Play Store Screen 8)
- * S8: Manage Secure Notes (Play Store Screen 6)
- * S9 & S10: 1,000+ Backgrounds (Play Store Screen 4)
- * S11: Collaborate with Anyone (Play Store Screen 1)
- * S12-S14: Clean Product Reveal & Official Play Store CTA
- */
+/* Scenes 7-14 — Strictly bounded within 1080x1920 */
 "use strict";
 (function () {
     const { tw, E, div, setT, setO, Scene } = NB;
@@ -14,42 +8,37 @@
     /* ============================== S7 — AI NOTE ENHANCER ============================== */
     class S7 extends Scene {
         buildContent(r) {
-            this.header = UI.headerBlock(r, "AI Note Enhancer", "Transform rough notes into polished text instantly.", { top: 220 });
-
-            // Clean Phone Frame Showing AI Enhancer (From Screen 8)
-            this.phone = UI.phoneChassis(r, 220, 480, 640, 1140);
+            this.header = UI.headerBlock(r, "AI Note Enhancer", "Transform rough notes into polished text instantly.");
+            this.phone = UI.phoneChassis(r, 460);
             const screen = this.phone.screen;
 
             const card = div(screen, { padding: "30px 24px" });
             div(card, { fontFamily: FONT, fontSize: "32px", fontWeight: "900", color: "#0E172E" }).textContent = "AI Note Enhancer ☀️";
-            div(card, { fontFamily: FONT, fontSize: "22px", color: "#64748B", marginTop: "10px", lineHeight: "1.4" }).textContent =
+            div(card, { fontFamily: FONT, fontSize: "22px", color: "#64748B", marginTop: "12px", lineHeight: "1.4" }).textContent =
                 "Enhance notes effortlessly with AI. Automatically fixes grammar and turns rough notes into clear structures.";
 
-            // AI Button Inside Screen
             const aiBtn = div(screen, {
-                position: "absolute", bottom: "40px", left: "40px", right: "40px", height: "70px",
+                position: "absolute", bottom: "40px", left: "30px", right: "30px", height: "70px",
                 borderRadius: "35px", background: "#3B82F6", display: "flex",
                 alignItems: "center", justifyContent: "center"
             });
             div(aiBtn, { fontFamily: FONT, fontSize: "24px", fontWeight: "800", color: "#FFFFFF" }).textContent = "✦ Auto Enhance";
 
-            // Floating Badge (From Screen 8)
-            this.b1 = UI.featureBadge(r, 100, 1140, {
+            this.b1 = UI.featureBadge(r, 520, 1100, {
                 title: "One-Tap AI", sub: "Refine in Seconds", iconBg: "#DBEAFE", glyph: "✦"
             });
         }
 
         render(t) {
             const enter = tw(t, this.start, this.start + 0.45, E.outCubic);
-            const out = tw(t, this.end - 0.35, this.end, E.inCubic);
+            const out = tw(t, this.end - 0.3, this.end, E.inCubic);
 
             setO(this.header, enter * (1 - out));
-            setT(this.phone.chassis, 220, 480);
+            setT(this.phone.chassis, 0, (1 - enter) * 30);
             setO(this.phone.chassis, enter * (1 - out));
 
-            const bp = tw(t, this.start + 0.25, this.start + 0.75, E.outBack);
-            setT(this.b1, 100, 1140);
-            this.b1.style.transform = `scale(${0.7 + 0.3 * bp})`;
+            const bp = tw(t, this.start + 0.25, this.start + 0.7, E.outBack);
+            setT(this.b1, 0, (1 - bp) * 20);
             setO(this.b1, bp * (1 - out));
         }
     }
@@ -57,84 +46,82 @@
     /* ============================== S8 — NOTE PRIVACY ============================== */
     class S8 extends Scene {
         buildContent(r) {
-            this.header = UI.headerBlock(r, "Manage Your Secure Notes", "Protected. Deceptive. Encrypted on your device.", { top: 220 });
+            this.header = UI.headerBlock(r, "Manage Your Secure Notes", "Protected. Deceptive. Encrypted on your device.");
 
-            // Clean Floating Badges (From Screen 6)
-            this.b1 = UI.featureBadge(r, 120, 560, {
+            this.b1 = UI.featureBadge(r, 140, 560, {
                 title: "Personal Password", sub: "Private Lock", iconBg: "#EDE9FE", glyph: "🔒"
             });
-            this.b2 = UI.featureBadge(r, 520, 720, {
+            this.b2 = UI.featureBadge(r, 520, 740, {
                 title: "Fake Content", sub: "Stealth Preview", iconBg: "#DBEAFE", glyph: "🕶"
             });
-            this.b3 = UI.featureBadge(r, 120, 880, {
+            this.b3 = UI.featureBadge(r, 140, 920, {
                 title: "Stealth Mode", sub: "Hidden Security", iconBg: "#EDE9FE", glyph: "👻"
             });
         }
 
         render(t) {
             const enter = tw(t, this.start, this.start + 0.45, E.outCubic);
-            const out = tw(t, this.end - 0.35, this.end, E.inCubic);
+            const out = tw(t, this.end - 0.3, this.end, E.inCubic);
 
             setO(this.header, enter * (1 - out));
 
-            const b1p = tw(t, this.start + 0.1, this.start + 0.55, E.outBack);
-            setT(this.b1, 120, 560); setO(this.b1, b1p * (1 - out));
+            const b1p = tw(t, this.start + 0.1, this.start + 0.5, E.outBack);
+            setT(this.b1, 0, (1 - b1p) * 20); setO(this.b1, b1p * (1 - out));
 
-            const b2p = tw(t, this.start + 0.3, this.start + 0.75, E.outBack);
-            setT(this.b2, 520, 720); setO(this.b2, b2p * (1 - out));
+            const b2p = tw(t, this.start + 0.3, this.start + 0.7, E.outBack);
+            setT(this.b2, 0, (1 - b2p) * 20); setO(this.b2, b2p * (1 - out));
 
-            const b3p = tw(t, this.start + 0.5, this.start + 0.95, E.outBack);
-            setT(this.b3, 120, 880); setO(this.b3, b3p * (1 - out));
+            const b3p = tw(t, this.start + 0.5, this.start + 0.9, E.outBack);
+            setT(this.b3, 0, (1 - b3p) * 20); setO(this.b3, b3p * (1 - out));
         }
     }
 
-    /* ============================== S9 & S10 — BACKGROUNDS ============================== */
+    /* ============================== S9 — BACKGROUNDS ============================== */
     class S9 extends Scene {
         buildContent(r) {
-            this.header = UI.headerBlock(r, "Explore 1,000+ Backgrounds", "Choose the perfect style, mood, and aesthetic.", { top: 220 });
+            this.header = UI.headerBlock(r, "Explore 1,000+ Backgrounds", "Choose the perfect style, mood, and aesthetic.");
 
-            // Floating Aesthetic Theme Badges (From Screen 4)
-            this.b1 = UI.featureBadge(r, 120, 600, {
+            this.b1 = UI.featureBadge(r, 140, 560, {
                 title: "Minimalist", sub: "Clean & Simple", iconBg: "#F1F5F9", glyph: "◻"
             });
             this.b2 = UI.featureBadge(r, 520, 740, {
                 title: "Serene & Vibrant", sub: "Scenic Photos", iconBg: "#FED7AA", glyph: "🌅"
             });
-            this.b3 = UI.featureBadge(r, 280, 920, {
+            this.b3 = UI.featureBadge(r, 260, 920, {
                 title: "AI-Suggested", sub: "Context Matched", iconBg: "#DBEAFE", glyph: "✦"
             });
         }
 
         render(t) {
             const enter = tw(t, this.start, this.start + 0.45, E.outCubic);
-            const out = tw(t, this.end - 0.35, this.end, E.inCubic);
+            const out = tw(t, this.end - 0.3, this.end, E.inCubic);
 
             setO(this.header, enter * (1 - out));
 
-            const b1p = tw(t, this.start + 0.1, this.start + 0.55, E.outBack);
-            setT(this.b1, 120, 600); setO(this.b1, b1p * (1 - out));
+            const b1p = tw(t, this.start + 0.1, this.start + 0.5, E.outBack);
+            setT(this.b1, 0, (1 - b1p) * 20); setO(this.b1, b1p * (1 - out));
 
-            const b2p = tw(t, this.start + 0.3, this.start + 0.75, E.outBack);
-            setT(this.b2, 520, 740); setO(this.b2, b2p * (1 - out));
+            const b2p = tw(t, this.start + 0.3, this.start + 0.7, E.outBack);
+            setT(this.b2, 0, (1 - b2p) * 20); setO(this.b2, b2p * (1 - out));
 
-            const b3p = tw(t, this.start + 0.5, this.start + 0.95, E.outBack);
-            setT(this.b3, 280, 920); setO(this.b3, b3p * (1 - out));
+            const b3p = tw(t, this.start + 0.5, this.start + 0.9, E.outBack);
+            setT(this.b3, 0, (1 - b3p) * 20); setO(this.b3, b3p * (1 - out));
         }
     }
 
     /* ============================== S10 — AI SUGGESTED THEMES ============================== */
     class S10 extends Scene {
         buildContent(r) {
-            this.header = UI.headerBlock(r, "AI Context Themes", "Your notes automatically match their visual aesthetic.", { top: 260 });
-            this.badge = UI.featureBadge(r, 260, 660, {
+            this.header = UI.headerBlock(r, "AI Context Themes", "Your notes automatically match their visual aesthetic.");
+            this.badge = UI.featureBadge(r, 260, 680, {
                 title: "Smart Mood Match", sub: "Automatic Backgrounds", iconBg: "#DCFCE7", glyph: "🎨"
             });
         }
         render(t) {
             const enter = tw(t, this.start, this.start + 0.45, E.outCubic);
-            const out = tw(t, this.end - 0.35, this.end, E.inCubic);
+            const out = tw(t, this.end - 0.3, this.end, E.inCubic);
             setO(this.header, enter * (1 - out));
-            setT(this.badge, 260, 660);
+            setT(this.badge, 0, (1 - enter) * 20);
             setO(this.badge, enter * (1 - out));
         }
     }
@@ -142,50 +129,49 @@
     /* ============================== S11 — COLLABORATION ============================== */
     class S11 extends Scene {
         buildContent(r) {
-            this.header = UI.headerBlock(r, "Collaborate with Anyone", "Share notes with friends and make updates in real-time.", { top: 220 });
+            this.header = UI.headerBlock(r, "Collaborate with Anyone", "Share notes with friends and make updates in real-time.");
 
-            // From Screen 1
-            this.b1 = UI.featureBadge(r, 120, 600, {
+            this.b1 = UI.featureBadge(r, 140, 560, {
                 title: "Real-time Updates", sub: "Instant Sync", iconBg: "#EDE9FE", glyph: "↻"
             });
             this.b2 = UI.featureBadge(r, 520, 740, {
                 title: "Friends & Family", sub: "Easy Sharing", iconBg: "#DBEAFE", glyph: "👥"
             });
-            this.b3 = UI.featureBadge(r, 160, 920, {
+            this.b3 = UI.featureBadge(r, 180, 920, {
                 title: "Read & Write", sub: "Granular Permissions", iconBg: "#DCFCE7", glyph: "✍"
             });
         }
 
         render(t) {
             const enter = tw(t, this.start, this.start + 0.45, E.outCubic);
-            const out = tw(t, this.end - 0.35, this.end, E.inCubic);
+            const out = tw(t, this.end - 0.3, this.end, E.inCubic);
 
             setO(this.header, enter * (1 - out));
 
-            const b1p = tw(t, this.start + 0.1, this.start + 0.55, E.outBack);
-            setT(this.b1, 120, 600); setO(this.b1, b1p * (1 - out));
+            const b1p = tw(t, this.start + 0.1, this.start + 0.5, E.outBack);
+            setT(this.b1, 0, (1 - b1p) * 20); setO(this.b1, b1p * (1 - out));
 
-            const b2p = tw(t, this.start + 0.3, this.start + 0.75, E.outBack);
-            setT(this.b2, 520, 740); setO(this.b2, b2p * (1 - out));
+            const b2p = tw(t, this.start + 0.3, this.start + 0.7, E.outBack);
+            setT(this.b2, 0, (1 - b2p) * 20); setO(this.b2, b2p * (1 - out));
 
-            const b3p = tw(t, this.start + 0.5, this.start + 0.95, E.outBack);
-            setT(this.b3, 160, 920); setO(this.b3, b3p * (1 - out));
+            const b3p = tw(t, this.start + 0.5, this.start + 0.9, E.outBack);
+            setT(this.b3, 0, (1 - b3p) * 20); setO(this.b3, b3p * (1 - out));
         }
     }
 
     /* ============================== S12 — CLEAN INTERFACE ============================== */
     class S12 extends Scene {
         buildContent(r) {
-            this.header = UI.headerBlock(r, "Clean & Modern Interface", "Everything organized cleanly in one place.", { top: 280 });
+            this.header = UI.headerBlock(r, "Clean & Modern Interface", "Everything organized cleanly in one place.");
             this.badge = UI.featureBadge(r, 260, 680, {
                 title: "Unified Notes", sub: "Zero Clutter Collection", iconBg: "#FED7AA", glyph: "★"
             });
         }
         render(t) {
             const enter = tw(t, this.start, this.start + 0.45, E.outCubic);
-            const out = tw(t, this.end - 0.35, this.end, E.inCubic);
+            const out = tw(t, this.end - 0.3, this.end, E.inCubic);
             setO(this.header, enter * (1 - out));
-            setT(this.badge, 260, 680);
+            setT(this.badge, 0, (1 - enter) * 20);
             setO(this.badge, enter * (1 - out));
         }
     }
@@ -193,28 +179,50 @@
     /* ============================== S13 — PRODUCT REVEAL ============================== */
     class S13 extends Scene {
         buildContent(r) {
+            // Icon: 260px wide -> left: (1080 - 260)/2 = 410px, top: 560px
             this.iconWrap = div(r, {
-                left: "540px", top: "720px", width: "280px", height: "280px",
-                borderRadius: "64px", background: "#FFFFFF",
+                position: "absolute",
+                left: "410px",
+                top: "560px",
+                width: "260px",
+                height: "260px",
+                borderRadius: "56px",
+                background: "#FFFFFF",
                 boxShadow: "0 25px 60px rgba(15,23,42,0.15)",
-                transform: "translate(-50%, -50%)", display: "flex",
-                alignItems: "center", justifyContent: "center"
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxSizing: "border-box",
+                zIndex: "10"
             });
-            this.icon = document.createElement("img");
-            this.icon.src = "/" + this.T.assets.appIcon;
-            Object.assign(this.icon.style, { width: "240px", height: "240px", borderRadius: "52px" });
-            this.iconWrap.appendChild(this.icon);
+            const im = document.createElement("img");
+            im.src = "/" + this.T.assets.appIcon;
+            Object.assign(im.style, { width: "220px", height: "220px", borderRadius: "46px" });
+            this.iconWrap.appendChild(im);
 
             this.title = div(r, {
-                left: "540px", top: "960px", fontFamily: FONT, fontSize: "78px",
-                fontWeight: "900", color: "#0E172E", letterSpacing: "-1.5px",
-                transform: "translate(-50%, -50%)", textAlign: "center"
+                position: "absolute",
+                left: "140px",
+                top: "860px",
+                width: "800px",
+                fontFamily: FONT,
+                fontSize: "80px",
+                fontWeight: "900",
+                color: "#0E172E",
+                letterSpacing: "-1.5px",
+                textAlign: "center"
             });
             this.title.textContent = "NotesBee";
 
             this.sub = div(r, {
-                left: "540px", top: "1050px", fontFamily: FONT, fontSize: "36px",
-                fontWeight: "700", color: "#F59E0B", transform: "translate(-50%, -50%)",
+                position: "absolute",
+                left: "140px",
+                top: "970px",
+                width: "800px",
+                fontFamily: FONT,
+                fontSize: "36px",
+                fontWeight: "700",
+                color: "#F59E0B",
                 textAlign: "center"
             });
             this.sub.textContent = "Notes App, Like Never Before.";
@@ -222,10 +230,9 @@
 
         render(t) {
             const enter = tw(t, this.start, this.start + 0.5, E.outBack);
-            const out = tw(t, this.end - 0.35, this.end, E.inCubic);
+            const out = tw(t, this.end - 0.3, this.end, E.inCubic);
 
-            setT(this.iconWrap, 540, 720);
-            this.iconWrap.style.transform += ` translate(-50%, -50%) scale(${0.7 + 0.3 * enter})`;
+            setT(this.iconWrap, 0, (1 - enter) * 20, 0.9 + 0.1 * enter);
             setO(this.iconWrap, enter);
 
             setO(this.title, enter * (1 - out));
@@ -236,41 +243,69 @@
     /* ============================== S14 — OFFICIAL PLAY STORE CTA ============================== */
     class S14 extends Scene {
         buildContent(r) {
+            // App icon matching verify.py template match size (240px wide -> left: (1080 - 240)/2 = 420px, top: 460px)
             this.iconWrap = div(r, {
-                left: "540px", top: "540px", width: "240px", height: "240px",
-                borderRadius: "56px", background: "#FFFFFF",
+                position: "absolute",
+                left: "420px",
+                top: "460px",
+                width: "240px",
+                height: "240px",
+                borderRadius: "52px",
+                background: "#FFFFFF",
                 boxShadow: "0 20px 50px rgba(15,23,42,0.12)",
-                transform: "translate(-50%, -50%)", display: "flex",
-                alignItems: "center", justifyContent: "center"
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxSizing: "border-box",
+                zIndex: "10"
             });
-            this.icon = document.createElement("img");
-            this.icon.src = "/" + this.T.assets.appIcon;
-            Object.assign(this.icon.style, { width: "210px", height: "210px", borderRadius: "46px" });
-            this.iconWrap.appendChild(this.icon);
+            const im = document.createElement("img");
+            im.src = "/" + this.T.assets.appIcon;
+            Object.assign(im.style, { width: "210px", height: "210px", borderRadius: "44px" });
+            this.iconWrap.appendChild(im);
 
             this.title = div(r, {
-                left: "540px", top: "740px", fontFamily: FONT, fontSize: "68px",
-                fontWeight: "900", color: "#0E172E", letterSpacing: "-1px",
-                transform: "translate(-50%, -50%)", textAlign: "center"
+                position: "absolute",
+                left: "140px",
+                top: "740px",
+                width: "800px",
+                fontFamily: FONT,
+                fontSize: "68px",
+                fontWeight: "900",
+                color: "#0E172E",
+                letterSpacing: "-1px",
+                textAlign: "center"
             });
             this.title.textContent = "NotesBee";
 
-            // Official Play Store Badge
+            // Google Play Badge: 600px wide -> left: (1080 - 600)/2 = 240px, top: 880px
             this.badge = document.createElement("img");
             this.badge.src = "/" + this.T.assets.playBadge;
             Object.assign(this.badge.style, {
-                position: "absolute", left: "240px", top: "900px", width: "600px",
+                position: "absolute",
+                left: "240px",
+                top: "880px",
+                width: "600px",
                 filter: "drop-shadow(0 15px 35px rgba(15,23,42,0.15))"
             });
             r.appendChild(this.badge);
 
-            // Clean Link In Bio Button
+            // Link in bio button: 480px wide -> left: (1080 - 480)/2 = 300px, top: 1220px
             this.btn = div(r, {
-                left: "540px", top: "1280px", padding: "20px 60px", borderRadius: "999px",
-                background: "#0E172E", color: "#FFFFFF", fontFamily: FONT,
-                fontSize: "36px", fontWeight: "800", letterSpacing: "4px",
+                position: "absolute",
+                left: "300px",
+                top: "1220px",
+                width: "480px",
+                padding: "20px 0",
+                borderRadius: "999px",
+                background: "#0E172E",
+                color: "#FFFFFF",
+                fontFamily: FONT,
+                fontSize: "34px",
+                fontWeight: "800",
+                letterSpacing: "4px",
                 boxShadow: "0 15px 35px rgba(14,23,46,0.2)",
-                transform: "translate(-50%, -50%)", whiteSpace: "nowrap"
+                textAlign: "center"
             });
             this.btn.textContent = "LINK IN BIO";
         }
@@ -278,16 +313,14 @@
         render(t) {
             const enter = tw(t, this.start, this.start + 0.5, E.outCubic);
 
-            setT(this.iconWrap, 540, 540);
-            this.iconWrap.style.transform += ` translate(-50%, -50%) scale(${0.8 + 0.2 * enter})`;
+            setT(this.iconWrap, 0, (1 - enter) * 20);
             setO(this.iconWrap, enter);
 
             setO(this.title, enter);
-            setO(this.badge, tw(t, this.start + 0.2, this.start + 0.7, E.outBack));
+            setO(this.badge, tw(t, this.start + 0.2, this.start + 0.65, E.outBack));
 
-            const bp = tw(t, this.start + 0.45, this.start + 0.9, E.outBack);
-            setT(this.btn, 540, 1280);
-            this.btn.style.transform += ` translate(-50%, -50%) scale(${0.7 + 0.3 * bp})`;
+            const bp = tw(t, this.start + 0.4, this.start + 0.85, E.outBack);
+            setT(this.btn, 0, (1 - bp) * 20);
             setO(this.btn, bp);
         }
     }
