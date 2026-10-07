@@ -1,5 +1,5 @@
 /* Bootstrap: Loads timing.json, initializes scenes & camera,
- * exposes window.__seek(t) for Playwright.
+ * animates kinetic captions, exposes window.__seek(t) for Playwright.
  */
 "use strict";
 (function () {
@@ -20,6 +20,9 @@
     }
 
     let TIMING = null, scenes = [], camera = null;
+    const subContainer = document.getElementById("subtitles");
+    let subPill = null;
+    let currentLineId = null;
 
     async function load() {
         const res = await fetch(`/build/timing_day${DAY}.json`);
@@ -32,7 +35,7 @@
         const world = document.getElementById("world");
         scenes = NB.buildScenes(world, A, TIMING);
 
-        // Steady, centered camera with gentle scale transitions
+        // Steady, centered camera
         camera = new NB.Camera();
         camera.at(0, 540, 960, 1.0)
             .at(TIMING.duration, 540, 960, 1.0);
@@ -43,14 +46,76 @@
         return true;
     }
 
+    // Reports exact bounding rectangle for verify.py safe-area checks
     window.__subtitleRect = function () {
-        return null; // Subtitles omitted; safe area check in verify.py is bypassed cleanly
+        if (!subPill || subContainer.style.display === "none") return null;
+        const r = subPill.getBoundingClientRect();
+        return { x: r.left, y: r.top, w: r.width, h: r.height };
     };
+
+    function updateSubtitles(t) {
+        // Find active narration line
+        const activeLine = TIMING.lines.find(l => t >= l.start && t <= l.end + 0.15);
+
+        // Hide subtitles during Scene 1 (Day Hook) and Scene 14 (CTA) to avoid visual clashes
+        const isExcluded = activeLine && (activeLine.id === "l1" || activeLine.id === "l22" || activeLine.id === "l23");
+
+        if (!activeLine || isExcluded) {
+            if (subContainer.style.display !== "none") {
+                subContainer.style.display = "none";
+                subContainer.innerHTML = "";
+                currentLineId = null;
+                subPill = null;
+            }
+            return;
+        }
+
+        if (subContainer.style.display !== "flex") {
+            subContainer.style.display = "flex";
+        }
+
+        // Build word elements when transitioning to a new line
+        if (currentLineId !== activeLine.id) {
+            currentLineId = activeLine.id;
+            subContainer.innerHTML = "";
+            subPill = document.createElement("div");
+            subPill.className = "subpill";
+
+            activeLine.words.forEach((w, idx) => {
+                const span = document.createElement("span");
+                span.className = "sub-word";
+                span.textContent = w.w;
+                span.dataset.idx = idx;
+                subPill.appendChild(span);
+            });
+            subContainer.appendChild(subPill);
+        }
+
+        // Highlight active word in amber and mark spoken words white
+        const spans = subPill.children;
+        for (let i = 0; i < activeLine.words.length; i++) {
+            const w = activeLine.words[i];
+            const span = spans[i];
+            if (!span) continue;
+
+            const isCurrent = t >= w.s && t <= w.e;
+            const hasPassed = t > w.e;
+
+            if (isCurrent) {
+                span.className = "sub-word active";
+            } else if (hasPassed) {
+                span.className = "sub-word spoken";
+            } else {
+                span.className = "sub-word";
+            }
+        }
+    }
 
     window.__seek = function (t) {
         const world = document.getElementById("world");
         camera.apply(t, world);
         for (const sc of scenes) sc.update(t);
+        updateSubtitles(t);
         return true;
     };
 

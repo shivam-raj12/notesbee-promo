@@ -72,12 +72,17 @@ class Scene {
         this.built = true;
     }
     update(t) {
-        const on = t >= this.start && t <= this.end;
+        const on = t >= this.start && (this.id === "s14" ? t <= this.end : t < this.end);
         if (!on) {
-            if (this.root.style.display !== "none") this.root.style.display = "none";
+            if (this.root.style.display !== "none") {
+                this.root.style.display = "none";
+                this.root.style.opacity = "0";
+            }
             return;
         }
-        if (this.root.style.display !== "block") this.root.style.display = "block";
+        if (this.root.style.display !== "block") {
+            this.root.style.display = "block";
+        }
         this.render(t);
     }
     buildContent(root) {}

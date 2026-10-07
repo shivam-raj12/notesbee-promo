@@ -51,98 +51,89 @@ def place(bus, sig, at, gain=1.0):
 
 
 def sfx_schedule(A):
-  """SFX events [(time, name, gain, kwargs)] — mirrors scene choreography."""
+  """SFX events [(time, name, gain, kwargs)]
+  Synchronized to the clean Play Store redesign scenes.
+  """
   ev = []
   add = lambda t, name, g=1.0, **kw: ev.append((t, name, g, kw))
 
-  # S1 hook
-  add(A["l1"]["s"], "whoosh", 0.75, dur=0.35)
-  add(A["l1"]["s"] + 0.58, "impact", 0.85)
+  # --- S1: DAY HOOK ---
+  # Badge intro whoosh and Day card impact (synced with verify.py at l1.s + 0.62)
+  add(A["l1"]["s"] + 0.1, "whoosh", 0.6, dur=0.3)
+  add(A["l1"]["s"] + 0.62, "impact", 0.85)
 
-  # S2 typing + icon reveal
-  add(A["l2"]["s"] + 0.3, "type_clicks", 0.6, count=6, gap=0.3, dur_total=2.0)
-  add(A["l2"]["e"] - 1.15, "chime", 0.75)
-  add(A["l2"]["e"] - 1.15, "pop", 0.65)
+  # --- S2: SOLO DEVELOPER ---
+  # App icon entry (A.l2.s) and floating badges pop (l2.s + 0.35, l2.s + 0.6)
+  add(A["l2"]["s"], "whoosh", 0.5, dur=0.25)
+  add(A["l2"]["s"] + 0.35, "pop", 0.65)
+  add(A["l2"]["s"] + 0.6, "pop", 0.65)
 
-  # S3
-  add(A["l3"]["s"] + 0.2, "whoosh", 0.5, dur=0.3)
-  add(A["l4"]["s"] + 0.5, "whoosh", 0.6, dur=0.22)
-  add(A["l4"]["s"] + 0.55, "click", 0.8)
-  add(A["l5"]["s"] + 0.5, "whoosh", 0.6, dur=0.22)
-  add(A["l5"]["s"] + 0.55, "click", 0.8)
+  # --- S3: 100-DAY CHALLENGE ---
+  # Progress board entrance
+  add(A["l3"]["s"], "whoosh", 0.45, dur=0.25)
+  # Badge 1 "No Paid Ads" (A.l4.s)
+  add(A["l4"]["s"], "click", 0.75, freq=1800)
+  # Badge 2 "Just Consistency" (A.l6.s)
+  add(A["l6"]["s"], "confirm_ding", 0.75)
 
-  # S4 chat pops
-  base = A["l7"]["s"] + 0.32
-  for i in range(6):
-    add(base + i * 0.48 + 0.28, "pop", 0.65, seed=i + 2)
-  add(A["l8"]["s"] + 0.15, "whoosh", 0.55, dur=0.5, up=False)
-  add(A["l9"]["s"] + 1.2, "whoosh", 0.75, dur=0.45)
-  add(A["l9"]["e"] - 0.12, "lock_clunk", 0.8)
+  # --- S4: MANAGE IMPORTANT CHATS ---
+  # Phone slides in (A.l7.s)
+  add(A["l7"]["s"] + 0.1, "whoosh", 0.5, dur=0.3)
+  # Badge 1 "No Clutter" (A.l8.s)
+  add(A["l8"]["s"], "pop", 0.65)
+  # Badge 2 "Secure on Device" (A.l9.s)
+  add(A["l9"]["s"], "lock_clunk", 0.8)
 
-  # S5 analytics
-  for lid in ("l12", "l13", "l14"):
-    add(
-        A[lid]["s"] - 0.15,
-        "type_clicks",
-        0.5,
-        count=7,
-        gap=0.11,
-        dur_total=1.1,
-    )
-  add(A["l10"]["s"] + 0.15, "whoosh", 0.45, dur=0.35)
-  add(A["l13"]["s"] - 0.3, "whoosh", 0.4, dur=0.25)
-  add(A["l14"]["s"] - 0.3, "whoosh", 0.4, dur=0.25)
+  # --- S5: INSTANTLY ANALYZE CHATS ---
+  # Analytics board entry
+  add(A["l10"]["s"] + 0.1, "whoosh", 0.5, dur=0.3)
+  # Tick mark on data reveal
+  add(A["l11"]["s"] + 0.2, "tick", 0.8)
+  # Badge 1 "Vocabulary & Split" (A.l13.s)
+  add(A["l13"]["s"], "pop", 0.65)
+  # Badge 2 "Detailed Gaps" (A.l14.s)
+  add(A["l14"]["s"], "pop", 0.65)
 
-  # S6 clock + freeze
-  add(A["l15"]["s"] + 0.4, "pop", 0.65)
-  T0 = A["l15"]["s"] + 0.6
-  for dt in (0.0, 0.8, 1.5, 2.1):
-    add(T0 + dt, "tick", 0.85)
+  # --- S6: LEFT ON READ ---
+  # Silence gap card entry
+  add(A["l15"]["s"] + 0.1, "whoosh", 0.5, dur=0.3)
+  # "Let the data decide" impact (A.l16.s / A.l17.s)
+  add(A["l16"]["s"], "tick", 0.9)
+  add(A["l17"]["s"], "cine_impact", 0.8)
 
-  spin_start, freeze = T0 + 2.6, A["l16"]["s"] - 0.12
-  tt = spin_start
-  gap = 0.16
-  while tt < freeze - 0.05:
-    add(tt, "tick", 0.85, bright=1.2)
-    tt += gap
-    gap = max(0.05, gap * 0.88)
-  add(spin_start, "riser", 0.7, dur=max(0.4, freeze - spin_start))
-  add(A["l16"]["s"], "cine_impact", 0.85)
-  add(A["l17"]["s"] + 0.06, "cine_impact", 0.85)
+  # --- S7: AI NOTE ENHANCER ---
+  # AI phone + auto-enhance chime & shimmer
+  add(A["l18"]["s"], "whoosh", 0.45, dur=0.25)
+  add(A["l19a"]["s"], "shimmer", 0.75)
+  add(A["l19a"]["s"] + 0.25, "pop", 0.6)
 
-  # S7 AI
-  add(A["l19a"]["s"] + 0.12, "shimmer", 0.8)
-  add(A["l19a"]["s"] + 1.35, "chime", 0.65, base=1568.0)
+  # --- S8: SECURE NOTES (PRIVACY) ---
+  # Triple badge locks (l19b.s + 0.1, + 0.3, + 0.5)
+  add(A["l19b"]["s"] + 0.1, "lock_clunk", 0.75)
+  add(A["l19b"]["s"] + 0.3, "click", 0.65)
+  add(A["l19b"]["s"] + 0.5, "lock_clunk", 0.8)
 
-  # S8 privacy
-  add(A["l19b"]["s"] + 0.62, "lock_clunk", 0.85)
-  add(A["l19b"]["s"] + 1.25, "lock_clunk", 0.8)
+  # --- S9 & S10: 1000+ BACKGROUNDS ---
+  # Background badges
+  add(A["l19c"]["s"] + 0.1, "pop", 0.6)
+  add(A["l19c"]["s"] + 0.3, "pop", 0.6)
+  add(A["l19c"]["s"] + 0.5, "chime", 0.6, base=1400.0)
 
-  # S9 backgrounds
-  add(A["l19c"]["s"] - 0.1, "whoosh", 0.55, dur=0.4)
-  add(A["l19c"]["s"] + 0.75, "impact", 0.65)
-
-  # S10 AI suggested
-  l19cMid = A["l19c"]["s"] + (A["l19c"]["e"] - A["l19c"]["s"]) * 0.55
-  add(l19cMid + 0.9, "chime", 0.7, base=1174.7)
-
-  # S11 collab
+  # --- S11 & S12: COLLABORATION & CLEAN UI ---
   add(A["l19d"]["s"] + 0.1, "connect_blip", 0.7)
-  l19dMid = A["l19d"]["s"] + (A["l19d"]["e"] - A["l19d"]["s"]) * 0.52
-  add(l19dMid - 0.45, "connect_blip", 0.7)
+  add(A["l19d"]["s"] + 0.3, "connect_blip", 0.7)
+  add(A["l19d"]["s"] + 0.5, "click", 0.65)
 
-  # S12 cards
-  for i in range(5):
-    add(
-        l19dMid + 0.1 + i * 0.12 + 0.28, "click", 0.5, freq=1700 + i * 160
-    )
+  # --- S13: PRODUCT REVEAL ---
+  # Logo & title swell
+  add(A["l20"]["s"], "resolve_swell", 0.8)
 
-  # S13 reveal
-  add(A["l20"]["s"] + 0.75, "resolve_swell", 0.85)
+  # --- S14: PLAY STORE CTA ---
+  # App icon & Google Play badge entry
+  add(A["l21"]["s"] + 0.2, "whoosh", 0.5, dur=0.3)
+  # Link in bio button
+  add(A["l22"]["s"] + 0.4, "confirm_ding", 0.8)
 
-  # S14 CTA
-  add(A["l22"]["s"] + 0.5, "confirm_ding", 0.8)
-  add(A["l23"]["s"] + 0.2, "chime", 0.5, base=1046.5)
   return ev
 
 
@@ -197,10 +188,9 @@ def mix(day: int, cfg: dict):
   out = narration + sfx_bus + music_bus
 
   # 5. Two-stage Soft Limiter & True Normalization
-  # Soft saturation curve (eliminates harsh square wave clipping)
   out = np.tanh(out * 0.85)
 
-  # Target -1.5 dBFS to prevent lossy AAC inter-sample overshoot (> -0.3 dBFS)
+  # Hard target at -1.5 dBFS ensures AAC muxing stays strictly below -0.3 dBFS
   target_linear = 10 ** (-1.5 / 20)
   max_peak = np.max(np.abs(out))
   if max_peak > 0:

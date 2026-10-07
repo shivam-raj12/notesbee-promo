@@ -50,8 +50,50 @@
         .scene { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
         #fx { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; pointer-events: none; z-index: 400; }
 
-        /* Subtitles removed completely — focus is 100% on clean layout */
-        #subtitles { display: none; }
+        /* Kinetic Captions Container — Centered, strictly inside the vertical safe area */
+        #subtitles {
+            position: absolute;
+            bottom: 220px;
+            left: 540px;
+            transform: translateX(-50%);
+            width: 920px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 500;
+        }
+        .subpill {
+            padding: 18px 36px;
+            border-radius: 999px;
+            background: rgba(14, 23, 46, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+            display: inline-flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px 14px;
+            max-width: 860px;
+        }
+        .sub-word {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            font-size: 38px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+            color: rgba(255, 255, 255, 0.55);
+            transition: transform 0.08s ease-out, color 0.08s ease-out;
+        }
+        .sub-word.active {
+            color: #F59E0B;
+            transform: scale(1.15);
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+        }
+        .sub-word.spoken {
+            color: #FFFFFF;
+        }
     </style>
 </head>
 <body>
@@ -59,6 +101,7 @@
     <div class="ambient-blur blur-1"></div>
     <div class="ambient-blur blur-2"></div>
     <div id="world"></div>
+    <div id="subtitles"></div>
     <canvas id="fx" width="1080" height="1920"></canvas>
 </div>
 <script src="js/engine.js"></script>

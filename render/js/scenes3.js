@@ -1,4 +1,4 @@
-/* Scenes 7-14 — Strictly bounded within 1080x1920 */
+/* Scenes 7-14 — Features & Play Store CTA (Using real assets) */
 "use strict";
 (function () {
     const { tw, E, div, setT, setO, Scene } = NB;
@@ -9,21 +9,34 @@
     class S7 extends Scene {
         buildContent(r) {
             this.header = UI.headerBlock(r, "AI Note Enhancer", "Transform rough notes into polished text instantly.");
-            this.phone = UI.phoneChassis(r, 460);
-            const screen = this.phone.screen;
 
-            const card = div(screen, { padding: "30px 24px" });
-            div(card, { fontFamily: FONT, fontSize: "32px", fontWeight: "900", color: "#0E172E" }).textContent = "AI Note Enhancer ☀️";
-            div(card, { fontFamily: FONT, fontSize: "22px", color: "#64748B", marginTop: "12px", lineHeight: "1.4" }).textContent =
-                "Enhance notes effortlessly with AI. Automatically fixes grammar and turns rough notes into clear structures.";
-
-            const aiBtn = div(screen, {
-                position: "absolute", bottom: "40px", left: "30px", right: "30px", height: "70px",
-                borderRadius: "35px", background: "#3B82F6", display: "flex",
-                alignItems: "center", justifyContent: "center"
+            // Centered Real Phone Screenshot (assets/ai.png)
+            // Width: 600px -> left = 240px
+            this.phoneWrap = div(r, {
+                position: "absolute",
+                left: "240px",
+                top: "440px",
+                width: "600px",
+                height: "1140px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                filter: "drop-shadow(0 25px 50px rgba(15,23,42,0.18))",
+                zIndex: "10"
             });
-            div(aiBtn, { fontFamily: FONT, fontSize: "24px", fontWeight: "800", color: "#FFFFFF" }).textContent = "✦ Auto Enhance";
 
+            this.phoneImg = document.createElement("img");
+            this.phoneImg.src = "/assets/ai.png";
+            Object.assign(this.phoneImg.style, {
+                width: "100%",
+                height: "auto",
+                maxHeight: "1140px",
+                objectFit: "contain",
+                borderRadius: "44px"
+            });
+            this.phoneWrap.appendChild(this.phoneImg);
+
+            // Keep feature badge
             this.b1 = UI.featureBadge(r, 520, 1100, {
                 title: "One-Tap AI", sub: "Refine in Seconds", iconBg: "#DBEAFE", glyph: "✦"
             });
@@ -34,8 +47,9 @@
             const out = tw(t, this.end - 0.3, this.end, E.inCubic);
 
             setO(this.header, enter * (1 - out));
-            setT(this.phone.chassis, 0, (1 - enter) * 30);
-            setO(this.phone.chassis, enter * (1 - out));
+            const pp = tw(t, this.start + 0.1, this.start + 0.55, E.outBack);
+            setT(this.phoneWrap, 0, (1 - pp) * 35);
+            setO(this.phoneWrap, pp * (1 - out));
 
             const bp = tw(t, this.start + 0.25, this.start + 0.7, E.outBack);
             setT(this.b1, 0, (1 - bp) * 20);
@@ -76,19 +90,52 @@
         }
     }
 
-    /* ============================== S9 — BACKGROUNDS ============================== */
+    /* ============================== S9 — 1,000+ BACKGROUNDS (REAL ASSETS) ============================== */
     class S9 extends Scene {
         buildContent(r) {
             this.header = UI.headerBlock(r, "Explore 1,000+ Backgrounds", "Choose the perfect style, mood, and aesthetic.");
 
-            this.b1 = UI.featureBadge(r, 140, 560, {
-                title: "Minimalist", sub: "Clean & Simple", iconBg: "#F1F5F9", glyph: "◻"
+            // Clean 3-Card Showcase container (assets/b1.png, assets/b2.png, assets/b3.png)
+            this.cardsWrap = div(r, {
+                position: "absolute",
+                left: "80px",
+                top: "480px",
+                width: "920px",
+                height: "640px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                zIndex: "10"
             });
-            this.b2 = UI.featureBadge(r, 520, 740, {
-                title: "Serene & Vibrant", sub: "Scenic Photos", iconBg: "#FED7AA", glyph: "🌅"
+
+            this.bgCards = ["/assets/b1.png", "/assets/b2.png", "/assets/b3.png"].map((src, i) => {
+                const wrap = div(this.cardsWrap, {
+                    width: "280px",
+                    height: "560px",
+                    borderRadius: "32px",
+                    overflow: "hidden",
+                    background: "#FFFFFF",
+                    boxShadow: i === 1
+                        ? "0 25px 60px rgba(15,23,42,0.2)"
+                        : "0 15px 35px rgba(15,23,42,0.1)",
+                    border: "2px solid #FFFFFF",
+                    boxSizing: "border-box",
+                    transformOrigin: "center center"
+                });
+                const img = document.createElement("img");
+                img.src = src;
+                Object.assign(img.style, {
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover"
+                });
+                wrap.appendChild(img);
+                return wrap;
             });
-            this.b3 = UI.featureBadge(r, 260, 920, {
-                title: "AI-Suggested", sub: "Context Matched", iconBg: "#DBEAFE", glyph: "✦"
+
+            // Feature pill at the bottom
+            this.b1 = UI.featureBadge(r, 260, 1180, {
+                title: "1,000+ Wallpapers", sub: "Vibrant & Minimalist Styles", iconBg: "#FED7AA", glyph: "🌅"
             });
         }
 
@@ -98,14 +145,17 @@
 
             setO(this.header, enter * (1 - out));
 
-            const b1p = tw(t, this.start + 0.1, this.start + 0.5, E.outBack);
-            setT(this.b1, 0, (1 - b1p) * 20); setO(this.b1, b1p * (1 - out));
+            this.bgCards.forEach((card, i) => {
+                const p = tw(t, this.start + 0.1 + i * 0.12, this.start + 0.55 + i * 0.12, E.outBack);
+                const yOff = (1 - p) * 40;
+                const scale = i === 1 ? (0.95 + 0.08 * p) : (0.88 + 0.05 * p);
+                card.style.transform = `translate3d(0, ${yOff}px, 0) scale(${scale})`;
+                setO(card, p * (1 - out));
+            });
 
-            const b2p = tw(t, this.start + 0.3, this.start + 0.7, E.outBack);
-            setT(this.b2, 0, (1 - b2p) * 20); setO(this.b2, b2p * (1 - out));
-
-            const b3p = tw(t, this.start + 0.5, this.start + 0.9, E.outBack);
-            setT(this.b3, 0, (1 - b3p) * 20); setO(this.b3, b3p * (1 - out));
+            const bp = tw(t, this.start + 0.4, this.start + 0.8, E.outBack);
+            setT(this.b1, 0, (1 - bp) * 20);
+            setO(this.b1, bp * (1 - out));
         }
     }
 
@@ -179,7 +229,6 @@
     /* ============================== S13 — PRODUCT REVEAL ============================== */
     class S13 extends Scene {
         buildContent(r) {
-            // Icon: 260px wide -> left: (1080 - 260)/2 = 410px, top: 560px
             this.iconWrap = div(r, {
                 position: "absolute",
                 left: "410px",
@@ -243,7 +292,6 @@
     /* ============================== S14 — OFFICIAL PLAY STORE CTA ============================== */
     class S14 extends Scene {
         buildContent(r) {
-            // App icon matching verify.py template match size (240px wide -> left: (1080 - 240)/2 = 420px, top: 460px)
             this.iconWrap = div(r, {
                 position: "absolute",
                 left: "420px",
@@ -278,7 +326,6 @@
             });
             this.title.textContent = "NotesBee";
 
-            // Google Play Badge: 600px wide -> left: (1080 - 600)/2 = 240px, top: 880px
             this.badge = document.createElement("img");
             this.badge.src = "/" + this.T.assets.playBadge;
             Object.assign(this.badge.style, {
@@ -290,7 +337,6 @@
             });
             r.appendChild(this.badge);
 
-            // Link in bio button: 480px wide -> left: (1080 - 480)/2 = 300px, top: 1220px
             this.btn = div(r, {
                 position: "absolute",
                 left: "300px",
@@ -329,24 +375,38 @@
     NB.buildScenes = function (world, A, T) {
         const { S1, S2, S3 } = NB.scenes1;
         const { S4, S5, S6 } = NB.scenes2;
-        const l19cMid = A.l19c.s + (A.l19c.e - A.l19c.s) * 0.55;
-        const l19dMid = A.l19d.s + (A.l19d.e - A.l19d.s) * 0.52;
+
+        const t1 = A.l1.e + 0.35;
+        const t2 = A.l2.e + 0.35;
+        const t3 = A.l6.e + 0.45;
+        const t4 = A.l9.e + 0.45;
+        const t5 = A.l14.e + 0.55;
+        const t6 = A.l17.e + 0.55;
+        const t7 = A.l19a.e + 0.35;
+        const t8 = A.l19b.e + 0.35;
+        const t9 = A.l19c.s + (A.l19c.e - A.l19c.s) * 0.52;
+        const t10 = A.l19c.e + 0.35;
+        const t11 = A.l19d.s + (A.l19d.e - A.l19d.s) * 0.50;
+        const t12 = A.l19d.e + 0.35;
+        const t13 = A.l20.e + 0.50;
+
         const defs = [
-            [S1, 0, A.l1.e + 0.55],
-            [S2, A.l1.e + 0.1, A.l2.e + 0.5],
-            [S3, A.l3.s - 0.35, A.l6.e + 0.72],
-            [S4, A.l7.s - 0.4, A.l9.e + 0.55],
-            [S5, A.l10.s - 0.3, A.l14.e + 0.75],
-            [S6, A.l15.s - 0.35, A.l17.e + 0.85],
-            [S7, A.l18.s - 0.35, A.l19a.e + 0.4],
-            [S8, A.l19b.s - 0.32, A.l19b.e + 0.5],
-            [S9, A.l19c.s - 0.28, l19cMid],
-            [S10, l19cMid - 0.12, A.l19c.e + 0.35],
-            [S11, A.l19d.s - 0.25, l19dMid],
-            [S12, l19dMid - 0.08, A.l19d.e + 0.5],
-            [S13, A.l20.s - 0.4, A.l20.e + 0.6],
-            [S14, A.l21.s - 0.35, T.duration],
+            [S1,  0,    t1],
+            [S2,  t1,   t2],
+            [S3,  t2,   t3],
+            [S4,  t3,   t4],
+            [S5,  t4,   t5],
+            [S6,  t5,   t6],
+            [S7,  t6,   t7],
+            [S8,  t7,   t8],
+            [S9,  t8,   t9],
+            [S10, t9,   t10],
+            [S11, t10,  t11],
+            [S12, t11,  t12],
+            [S13, t12,  t13],
+            [S14, t13,  T.duration],
         ];
+
         return defs.map(([Cls, s, e], i) => {
             const sc = new Cls("s" + (i + 1), s, e);
             sc.A = A; sc.T = T;

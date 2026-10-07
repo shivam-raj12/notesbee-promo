@@ -10,22 +10,33 @@
         buildContent(r) {
             this.header = UI.headerBlock(r, "Manage Your Important Chats", "Organized. Private. Always on your device.");
 
-            // Phone is centered: left: 230px, top: 460px
-            this.phone = UI.phoneChassis(r, 460);
-            const screen = this.phone.screen;
-
-            const topBar = div(screen, {
-                height: "80px", borderBottom: "1px solid #E2E8F0", padding: "0 24px",
-                display: "flex", alignItems: "center", boxSizing: "border-box"
+            // Centered Real Phone Screenshot (assets/chat.png)
+            // Width: 600px -> left = (1080 - 600)/2 = 240px
+            this.phoneWrap = div(r, {
+                position: "absolute",
+                left: "240px",
+                top: "440px",
+                width: "600px",
+                height: "1140px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                filter: "drop-shadow(0 25px 50px rgba(15,23,42,0.18))",
+                zIndex: "10"
             });
-            div(topBar, { fontFamily: FONT, fontSize: "28px", fontWeight: "800", color: "#0E172E" }).textContent = "←  Ananya";
 
-            this.msgList = div(screen, { padding: "24px 20px", display: "flex", flexDirection: "column" });
-            UI.chatBubble(this.msgList, { side: "them", text: "Are you awake? Did you save today's notes?" });
-            UI.chatBubble(this.msgList, { side: "me", text: "Yes! Everything is saved in NotesBee." });
-            UI.chatBubble(this.msgList, { side: "them", text: "Great! Don't lose this discussion." });
-            UI.chatBubble(this.msgList, { side: "me", text: "Never. Secure and archived on device." });
+            this.phoneImg = document.createElement("img");
+            this.phoneImg.src = "/assets/chat.png";
+            Object.assign(this.phoneImg.style, {
+                width: "100%",
+                height: "auto",
+                maxHeight: "1140px",
+                objectFit: "contain",
+                borderRadius: "44px"
+            });
+            this.phoneWrap.appendChild(this.phoneImg);
 
+            // Keep original feature badges intact
             this.b1 = UI.featureBadge(r, 60, 560, {
                 title: "No Clutter", sub: "Clean View", iconBg: "#DBEAFE", glyph: "☰"
             });
@@ -41,8 +52,8 @@
             setO(this.header, enter * (1 - out));
 
             const pp = tw(t, this.start + 0.1, this.start + 0.55, E.outBack);
-            setT(this.phone.chassis, 0, (1 - pp) * 40);
-            setO(this.phone.chassis, pp * (1 - out));
+            setT(this.phoneWrap, 0, (1 - pp) * 40);
+            setO(this.phoneWrap, pp * (1 - out));
 
             const b1p = tw(t, this.A.l8.s, this.A.l8.s + 0.5, E.outBack);
             setT(this.b1, 0, (1 - b1p) * 20);
@@ -59,7 +70,6 @@
         buildContent(r) {
             this.header = UI.headerBlock(r, "Instantly Analyze Your Chats", "Discover patterns, message counts, and word splits.");
 
-            // Analytics Card: Centered (width: 840px -> left: 120px, top: 480px, height: 680px)
             this.board = div(r, {
                 position: "absolute",
                 left: "120px",
@@ -93,7 +103,6 @@
             div(stat2, { fontFamily: FONT, fontSize: "22px", color: "#64748B", fontWeight: "700" }).textContent = "TOTAL WORDS";
             div(stat2, { fontFamily: FONT, fontSize: "48px", color: "#F59E0B", fontWeight: "900", marginTop: "4px" }).textContent = "3,232";
 
-            // Middle Row: Split Progress Bar
             const mid = div(this.board, { margin: "24px 0" });
             div(mid, { fontFamily: FONT, fontSize: "24px", fontWeight: "800", color: "#0E172E", marginBottom: "12px" }).textContent = "Participant Message Split";
             const splitTrack = div(mid, { width: "100%", height: "28px", borderRadius: "14px", background: "#F59E0B", display: "flex", overflow: "hidden" });
@@ -136,7 +145,6 @@
         buildContent(r) {
             this.header = UI.headerBlock(r, "No More Guessing", "See who replies fast, and who leaves you on read.");
 
-            // Card centered (width: 840px -> left: 120px, top: 560px)
             this.card = div(r, {
                 position: "absolute",
                 left: "120px",
