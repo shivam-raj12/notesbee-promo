@@ -1,0 +1,11 @@
+{
+  "name": "notesbee-promo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deterministic NotesBee promo-video generator (100-day challenge). No npm dependencies: the render engine is dependency-free JS driven by Python + Playwright + FFmpeg.",
+  "scripts": {
+    "day": "python3 daily.py --day 1",
+    "preview": "python3 daily.py --day 1 --preview",
+    "verify": "python3 scripts/verify.py --day 1 --video output/NotesBee-Day-01.mp4"
+  }
+}

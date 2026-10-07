@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NotesBee Promo Renderer</title>
+<style>
+  :root{
+    --bg:#070B18; --panel:#101a33; --panel2:#0D1428;
+    --amber:#FFC24B; --honey:#FF9E3D; --mint:#35D0A0; --violet:#8B7CFF;
+    --red:#FF5C5C; --ink:#F4F6FF; --dim:#8A93B2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);}
+  body{font-family:'Noto Sans','Inter','Segoe UI',sans-serif;color:var(--ink);}
+  #stage{position:fixed;left:0;top:0;width:1080px;height:1920px;overflow:hidden;background:var(--bg);}
+  #world{position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:540px 960px;will-change:transform;}
+  .scene{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:visible;}
+  #fx{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-events:none;z-index:400;}
+  #vignette{position:absolute;inset:0;z-index:500;pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 42%, transparent 55%, rgba(2,4,12,.55) 100%);}
+  #grain{position:absolute;left:0;top:0;width:1080px;height:1920px;z-index:501;pointer-events:none;opacity:.05;mix-blend-mode:overlay;}
+  #subtitles{position:absolute;left:60px;right:60px;top:1450px;z-index:600;text-align:center;pointer-events:none;}
+  .subpill{display:inline-block;background:rgba(6,10,24,.72);border-radius:22px;padding:18px 34px;
+    backdrop-filter:blur(6px);box-shadow:0 10px 40px rgba(0,0,0,.45);max-width:960px;}
+  .subw{display:inline-block;font-size:47px;font-weight:700;line-height:1.28;color:#E9EDFB;
+    margin:0 7px;transition:none;}
+  .subw.past{color:#FFFFFF;}
+  .subw.key{color:var(--amber);font-weight:900;}
+  .subw.key2{color:var(--mint);font-weight:900;}
+  .mono{font-family:'DejaVu Sans Mono',monospace;}
+  .black{font-weight:900;} .bold{font-weight:700;} .med{font-weight:500;}
+  .cond{font-family:'Noto Sans','Noto Sans Condensed',sans-serif;font-stretch:condensed;}
+</style>
+</head>
+<body>
+  <div id="stage">
+    <div id="world"></div>
+    <canvas id="fx" width="1080" height="1920"></canvas>
+    <div id="vignette"></div>
+    <canvas id="grain" width="270" height="480"></canvas>
+    <div id="subtitles"></div>
+  </div>
+  <script src="js/engine.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/scenes.js"></script>
+  <script src="js/scenes2.js"></script>
+  <script src="js/scenes3.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

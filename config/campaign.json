@@ -1,0 +1,34 @@
+{
+  "day": 42,
+  "totalDays": 100,
+  "app": {
+    "name": "NotesBee",
+    "tagline": "Save Notes & Chats"
+  },
+  "assets": {
+    "appIcon": "assets/notesbee-icon.png",
+    "playBadge": "assets/play-badge.png"
+  },
+  "video": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "previewWidth": 540,
+    "previewHeight": 960
+  },
+  "voice": {
+    "backend": "edge",
+    "edgeVoice": "en-US-AndrewNeural",
+    "edgeRate": "+8%",
+    "piperModel": "en_US-ryan-medium"
+  },
+  "music": {
+    "enabled": true,
+    "volumeDb": -16,
+    "duckDb": -11
+  },
+  "sfx": {
+    "enabled": true,
+    "volumeDb": -6
+  }
+}

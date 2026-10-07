@@ -1,0 +1,6 @@
+playwright>=1.40
+edge-tts>=7.0
+numpy>=1.26
+pillow>=10.0
+opencv-python-headless>=4.8
+mix

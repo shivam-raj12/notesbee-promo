@@ -1,0 +1,5 @@
+build/
+narration/lines/
+output/
+__pycache__/
+*.pyc
