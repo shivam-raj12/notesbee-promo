@@ -6,9 +6,10 @@
     const FONT = UI.FONT;
 
     /* ============================== S1 — DAY HOOK ============================== */
+    /* ============================== S1 — DAY HOOK ============================== */
     class S1 extends Scene {
         buildContent(r) {
-            // 1. Top Challenge Pill (Centered, width: 440px -> left = (1080 - 440)/2 = 320px)
+            // 1. Top Challenge Pill
             this.badge = div(r, {
                 position: "absolute",
                 left: "320px",
@@ -26,19 +27,19 @@
                 fontFamily: FONT,
                 fontSize: "24px",
                 fontWeight: "800",
-                color: "#F59E0B",
+                color: "#D97706",
                 letterSpacing: "3px",
                 textTransform: "uppercase"
             }).textContent = "100-DAY APP CHALLENGE";
 
-            // 2. Main Title (Centered, width: 880px -> left = 100px)
+            // 2. Main Title
             this.title = div(r, {
                 position: "absolute",
                 left: "100px",
-                top: "440px",
+                top: "430px",
                 width: "880px",
                 fontFamily: FONT,
-                fontSize: "72px",
+                fontSize: "68px",
                 fontWeight: "900",
                 color: "#0E172E",
                 letterSpacing: "-1.5px",
@@ -46,49 +47,86 @@
             });
             this.title.textContent = "Promoting NotesBee";
 
-            // 3. Large Day Card (Centered, width: 800px -> left = 140px, top: 620px, height: 640px)
+            // 3. Card Container
             this.card = div(r, {
                 position: "absolute",
                 left: "140px",
-                top: "620px",
+                top: "580px",
                 width: "800px",
                 height: "640px",
                 borderRadius: "44px",
                 background: "#FFFFFF",
                 border: "2px solid #E2E8F0",
-                boxShadow: "0 25px 60px rgba(15,23,42,0.1)",
+                boxShadow: "0 25px 60px rgba(15,23,42,0.08)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
                 boxSizing: "border-box",
+                overflow: "hidden",
                 zIndex: "10"
+            });
+
+            // Ambient radial warm glow behind the day number (matching the image)
+            div(this.card, {
+                position: "absolute",
+                right: "60px",
+                top: "40%",
+                width: "360px",
+                height: "360px",
+                borderRadius: "50%",
+                background: "radial-gradient(circle, rgba(230, 126, 34, 0.22) 0%, rgba(230, 126, 34, 0) 70%)",
+                transform: "translateY(-50%)",
+                pointerEvents: "none"
             });
 
             div(this.card, {
                 fontFamily: FONT,
-                fontSize: "36px",
+                fontSize: "30px",
                 fontWeight: "800",
                 color: "#64748B",
                 letterSpacing: "6px",
-                textTransform: "uppercase"
+                textTransform: "uppercase",
+                zIndex: "2"
             }).textContent = "TODAY IS";
 
-            div(this.card, {
+            // Two-Tone "DAY 01" Row
+            const dayRow = div(this.card, {
+                display: "flex",
+                alignItems: "baseline",
+                justifyContent: "center",
+                gap: "18px",
+                margin: "12px 0 20px 0",
+                zIndex: "2"
+            });
+
+            // "DAY" in bold dark slate/black
+            div(dayRow, {
                 fontFamily: FONT,
-                fontSize: "210px",
+                fontSize: "170px",
                 fontWeight: "900",
-                color: "#F59E0B",
+                color: "#0B0F19",
                 lineHeight: "1",
-                letterSpacing: "-6px",
-                margin: "12px 0"
-            }).textContent = `DAY ${this.T.day}`;
+                letterSpacing: "-4px"
+            }).textContent = "DAY";
+
+            // "01" / "03" in warm amber
+            const dayPadded = String(this.T.day).padStart(2, "0");
+            div(dayRow, {
+                fontFamily: FONT,
+                fontSize: "170px",
+                fontWeight: "900",
+                color: "#D97706",
+                lineHeight: "1",
+                letterSpacing: "-4px"
+            }).textContent = dayPadded;
 
             div(this.card, {
                 fontFamily: FONT,
-                fontSize: "30px",
+                fontSize: "28px",
                 fontWeight: "700",
-                color: "#0E172E"
+                color: "#475569",
+                zIndex: "2"
             }).textContent = "Zero Paid Ads · Pure Consistency";
 
             this.t0 = this.A.l1.s;
