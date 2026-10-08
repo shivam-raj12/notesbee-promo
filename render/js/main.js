@@ -53,11 +53,10 @@
         return { x: r.left, y: r.top, w: r.width, h: r.height };
     };
 
-    function updateSubtitles(t) {
-        // Find active narration line
-        const activeLine = TIMING.lines.find(l => t >= l.start && t <= l.end + 0.15);
+    let currentChunkKey = null;
 
-        // Hide subtitles during Scene 1 (Day Hook) and Scene 14 (CTA) to avoid visual clashes
+    function updateSubtitles(t) {
+        const activeLine = TIMING.lines.find(l => t >= l.start && t <= l.end + 0.1);
         const isExcluded = activeLine && (activeLine.id === "l1" || activeLine.id === "l22" || activeLine.id === "l23");
 
         if (!activeLine || isExcluded) {
@@ -65,6 +64,7 @@
                 subContainer.style.display = "none";
                 subContainer.innerHTML = "";
                 currentLineId = null;
+                currentChunkKey = null;
                 subPill = null;
             }
             return;
@@ -74,40 +74,54 @@
             subContainer.style.display = "flex";
         }
 
-        // Build word elements when transitioning to a new line
-        if (currentLineId !== activeLine.id) {
-            currentLineId = activeLine.id;
+        // Break line into clean chunks of up to 4 words
+        const words = activeLine.words;
+        const CHUNK_SIZE = 4;
+        let activeWordIdx = words.findIndex(w => t >= w.s && t <= w.e);
+        if (activeWordIdx === -1) {
+            // Find closest upcoming or recent word within line
+            activeWordIdx = words.findIndex(w => t < w.s);
+            if (activeWordIdx === -1) activeWordIdx = words.length - 1;
+            else activeWordIdx = Math.max(0, activeWordIdx - 1);
+        }
+
+        const chunkIndex = Math.floor(activeWordIdx / CHUNK_SIZE);
+        const chunkStart = chunkIndex * CHUNK_SIZE;
+        const chunkWords = words.slice(chunkStart, chunkStart + CHUNK_SIZE);
+        const chunkKey = `${activeLine.id}_${chunkIndex}`;
+
+        if (currentChunkKey !== chunkKey) {
+            currentChunkKey = chunkKey;
             subContainer.innerHTML = "";
             subPill = document.createElement("div");
             subPill.className = "subpill";
 
-            activeLine.words.forEach((w, idx) => {
+            chunkWords.forEach((w) => {
                 const span = document.createElement("span");
                 span.className = "sub-word";
                 span.textContent = w.w;
-                span.dataset.idx = idx;
                 subPill.appendChild(span);
             });
             subContainer.appendChild(subPill);
         }
 
-        // Highlight active word in amber and mark spoken words white
-        const spans = subPill.children;
-        for (let i = 0; i < activeLine.words.length; i++) {
-            const w = activeLine.words[i];
-            const span = spans[i];
-            if (!span) continue;
+        // Highlight active word in chunk
+        if (subPill) {
+            const spans = subPill.children;
+            chunkWords.forEach((w, i) => {
+                const span = spans[i];
+                if (!span) return;
+                const isCurrent = t >= w.s && t <= w.e;
+                const hasPassed = t > w.e;
 
-            const isCurrent = t >= w.s && t <= w.e;
-            const hasPassed = t > w.e;
-
-            if (isCurrent) {
-                span.className = "sub-word active";
-            } else if (hasPassed) {
-                span.className = "sub-word spoken";
-            } else {
-                span.className = "sub-word";
-            }
+                if (isCurrent) {
+                    span.className = "sub-word active";
+                } else if (hasPassed) {
+                    span.className = "sub-word spoken";
+                } else {
+                    span.className = "sub-word";
+                }
+            });
         }
     }
 
