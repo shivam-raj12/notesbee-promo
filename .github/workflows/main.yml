@@ -34,14 +34,21 @@ jobs:
         run: |
           python daily.py --day 1
 
-      - name: Verify generated video
+      - name: Generate Day 1 thumbnail
+        run: |
+          python3 scripts/thumbnail.py --day 1
+
+      - name: Verify generated assets
         run: |
           ls -lh output/
           test -f output/NotesBee-Day-01.mp4
 
-      - name: Upload generated video
+      - name: Upload generated video and thumbnail
         uses: actions/upload-artifact@v4
         with:
-          name: NotesBee-Day-01-Video
-          path: output/NotesBee-Day-01.mp4
+          name: NotesBee-Day-01-Assets
+          path: |
+            output/NotesBee-Day-01.mp4
+            output/*thumb*
+            output/*Day-01*
           retention-days: 1
