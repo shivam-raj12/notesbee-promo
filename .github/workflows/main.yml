@@ -1,18 +1,44 @@
-name: Test NotesBee Video Generator
+name: Daily NotesBee Video Generator & Instagram Publisher
 
 on:
+  schedule:
+    # Runs everyday at 06:00 UTC (11:30 AM IST)
+    - cron: '0 6 * * *'
   workflow_dispatch:
 
-env:
-  DAY: "100"
+concurrency:
+  group: daily-notesbee-publisher
+  cancel-in-progress: false
 
 jobs:
-  generate:
+  generate-and-publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Calculate DAY number
+        id: calc_day
+        run: |
+          START_DATE="2026-10-08"
+          CURRENT_DATE=$(date -u +"%Y-%m-%d")
+
+          START_SEC=$(date -u -d "$START_DATE" +%s)
+          CURRENT_SEC=$(date -u -d "$CURRENT_DATE" +%s)
+
+          DIFF_DAYS=$(( (CURRENT_SEC - START_SEC) / 86400 + 1 ))
+
+          if [ "$DIFF_DAYS" -lt 1 ]; then
+            DIFF_DAYS=1
+          fi
+
+          echo "Calculated DAY: $DIFF_DAYS"
+          echo "DAY=$DIFF_DAYS" >> "$GITHUB_ENV"
+          # Unique tag prevents clashes on re-runs
+          echo "TAG_NAME=temp-asset-d${DIFF_DAYS}-r${{ github.run_id }}" >> "$GITHUB_ENV"
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -23,6 +49,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install requests
 
       - name: Install Playwright Chromium
         run: |
@@ -44,14 +71,133 @@ jobs:
       - name: Verify generated assets
         run: |
           ls -lh output/
-          test -f output/video.mp4
-          test -f output/thumbnail.jpg
+          test -s output/video.mp4 || { echo "video.mp4 is empty or missing"; exit 1; }
+          test -s output/thumbnail.jpg || { echo "thumbnail.jpg is empty or missing"; exit 1; }
 
-      - name: Upload generated video and thumbnail
+      - name: Create Temporary Release for Asset Hosting
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: "Temporary Asset Hosting Day ${{ env.DAY }} [Run ${{ github.run_id }}]"
+          draft: false
+          prerelease: false
+          files: |
+            output/video.mp4
+            output/thumbnail.jpg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construct Download URLs
+        run: |
+          REPO="${{ github.repository }}"
+          TAG="${{ env.TAG_NAME }}"
+          echo "VIDEO_URL=https://github.com/${REPO}/releases/download/${TAG}/video.mp4" >> "$GITHUB_ENV"
+          echo "COVER_URL=https://github.com/${REPO}/releases/download/${TAG}/thumbnail.jpg" >> "$GITHUB_ENV"
+
+      - name: Publish Reel to Instagram via Graph API
+        env:
+          ACCESS_TOKEN: ${{ secrets.FACEBOOK_DEVELOPER_ACCESS_KEY }}
+          IG_USER_ID: ${{ secrets.INSTAGRAM_ID }}
+          VIDEO_URL: ${{ env.VIDEO_URL }}
+          COVER_URL: ${{ env.COVER_URL }}
+        run: |
+          python - << 'EOF'
+          import os
+          import sys
+          import time
+          import requests
+
+          access_token = os.environ.get("ACCESS_TOKEN")
+          ig_user_id = os.environ.get("IG_USER_ID")
+          video_url = os.environ.get("VIDEO_URL")
+          cover_url = os.environ.get("COVER_URL")
+
+          if not access_token or not ig_user_id:
+              print("Missing secrets: FACEBOOK_DEVELOPER_ACCESS_KEY or INSTAGRAM_ID.")
+              sys.exit(1)
+
+          caption = ""
+          if os.path.exists("caption.md"):
+              with open("caption.md", "r", encoding="utf-8") as f:
+                  caption = f.read().strip()
+
+          api_version = "v19.0"
+          base_url = f"https://graph.facebook.com/{api_version}"
+
+          # Step 1: Create Container
+          print(f"Creating container for user {ig_user_id}...")
+          payload = {
+              "media_type": "REELS",
+              "video_url": video_url,
+              "cover_url": cover_url,
+              "caption": caption,
+              "access_token": access_token
+          }
+
+          resp = requests.post(f"{base_url}/{ig_user_id}/media", data=payload)
+          res_data = resp.json()
+
+          if "id" not in res_data:
+              print(f"Container Creation Failed: {res_data}")
+              sys.exit(1)
+
+          container_id = res_data["id"]
+          print(f"Container created: {container_id}")
+
+          # Step 2: Poll container status
+          max_retries = 40
+          delay = 10
+          finished = False
+
+          for attempt in range(max_retries):
+              time.sleep(delay)
+              status_res = requests.get(
+                  f"{base_url}/{container_id}",
+                  params={"fields": "status_code", "access_token": access_token}
+              ).json()
+
+              status_code = status_res.get("status_code")
+              print(f"Status check ({attempt + 1}/{max_retries}): {status_code}")
+
+              if status_code == "FINISHED":
+                  finished = True
+                  break
+              elif status_code == "ERROR":
+                  print(f"Processing error: {status_res}")
+                  sys.exit(1)
+
+          if not finished:
+              print("Video transcoding timed out on Instagram servers.")
+              sys.exit(1)
+
+          # Step 3: Publish container
+          print("Publishing container...")
+          pub_res = requests.post(
+              f"{base_url}/{ig_user_id}/media_publish",
+              data={"creation_id": container_id, "access_token": access_token}
+          ).json()
+
+          if "id" in pub_res:
+              print(f"Published successfully! Reel ID: {pub_res['id']}")
+          else:
+              print(f"Publish failed: {pub_res}")
+              sys.exit(1)
+          EOF
+
+      - name: Clean up Release & Tag
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete "${{ env.TAG_NAME }}" --yes --cleanup-tag || true
+
+      - name: Archive Assets
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: NotesBee-Assets
+          name: NotesBee-Assets-Day-${{ env.DAY }}
           path: |
             output/video.mp4
             output/thumbnail.jpg
-          retention-days: 1
+          retention-days: 7
