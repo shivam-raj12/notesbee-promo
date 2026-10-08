@@ -2,8 +2,7 @@ name: Daily NotesBee Video Generator & Instagram Publisher
 
 on:
   schedule:
-    # Runs everyday at 06:00 UTC (11:30 AM IST)
-    - cron: '0 6 * * *'
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 concurrency:
