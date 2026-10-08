@@ -32,11 +32,11 @@ jobs:
 
       - name: Generate Day 1 video
         run: |
-          python daily.py --day 1
+          python daily.py --day 100
 
       - name: Generate Day 1 thumbnail
         run: |
-          python3 scripts/thumbnail.py --day 1
+          python3 scripts/thumbnail.py --day 100
 
       - name: Verify generated assets
         run: |
