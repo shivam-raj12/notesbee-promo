@@ -52,7 +52,7 @@ def main():
   (ROOT / "config/campaign.json").write_text(json.dumps(cfg, indent=2))
 
   out_name = (
-      f"NotesBee-Day-{args.day:02d}"
+      f"video"
       + ("_preview" if args.preview else "")
       + ".mp4"
   )

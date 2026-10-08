@@ -45,7 +45,7 @@ def main():
 
   out_dir = ROOT / "output"
   out_dir.mkdir(parents=True, exist_ok=True)
-  out_file = out_dir / f"NotesBee-Day-{args.day:02d}-thumb.jpg"
+  out_file = out_dir / "thumbnail.jpg"
 
   print(f"[thumbnail] Generating thumbnail for Day {args.day}...")
 

@@ -3,6 +3,9 @@ name: Test NotesBee Video Generator
 on:
   workflow_dispatch:
 
+env:
+  DAY: "1"
+
 jobs:
   generate:
     runs-on: ubuntu-latest
@@ -30,18 +33,25 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      - name: Generate Day 1 video
+      - name: Generate video
         run: |
-          python daily.py --day 1
+          python daily.py --day "$DAY"
 
-      - name: Verify generated video
+      - name: Generate thumbnail
+        run: |
+          python3 scripts/thumbnail.py --day "$DAY"
+
+      - name: Verify generated assets
         run: |
           ls -lh output/
-          test -f output/NotesBee-Day-01.mp4
+          test -f output/video.mp4
+          test -f output/thumbnail.jpg
 
-      - name: Upload generated video
+      - name: Upload generated video and thumbnail
         uses: actions/upload-artifact@v4
         with:
-          name: NotesBee-Day-01-Video
-          path: output/NotesBee-Day-01.mp4
+          name: NotesBee-Assets
+          path: |
+            output/video.mp4
+            output/thumbnail.jpg
           retention-days: 1
