@@ -190,13 +190,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release delete "${{ env.TAG_NAME }}" --yes --cleanup-tag || true
-
-      - name: Archive Assets
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: NotesBee-Assets-Day-${{ env.DAY }}
-          path: |
-            output/video.mp4
-            output/thumbnail.jpg
-          retention-days: 7
