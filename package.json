@@ -7,9 +7,10 @@
     "dev": "remotion studio src/index.ts",
     "start": "remotion studio src/index.ts",
     "upgrade": "remotion upgrade",
-    "voiceover": "python scripts/generate_voiceover.py 1",
-    "render": "remotion render src/index.ts NotesBeeReel out/NotesBee_Reel.mp4",
-    "daily": "python scripts/generate_voiceover.py 1 && remotion render src/index.ts NotesBeeReel out/NotesBee_Day_1.mp4"
+    "voiceover": "python scripts/generate_voiceover.py",
+    "render": "remotion render src/index.ts NotesBeeReel out/video.mp4",
+    "thumbnail": "remotion still src/index.ts NotesBeeThumbnail out/thumbnail.jpeg --image-format=jpeg --quality=95",
+    "daily": "python scripts/generate_voiceover.py && remotion render src/index.ts NotesBeeReel out/video.mp4 && remotion still src/index.ts NotesBeeThumbnail out/thumbnail.jpeg --image-format=jpeg --quality=95"
   },
   "dependencies": {
     "@remotion/cli": "4.0.533",
