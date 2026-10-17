@@ -1,9 +1,7 @@
-name: Build NotesBee Reel - Test Day 1
+name: Build NotesBee Reel - Day 10
 
 on:
   workflow_dispatch: # Allows manual trigger from GitHub Actions tab
-  push:
-    branches: [ main, master ]
 
 jobs:
   build-reel:
@@ -32,22 +30,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install edge-tts mutagen
 
-      - name: Generate Voiceover & SFX for Day 1
-        run: python scripts/generate_voiceover.py 1
+      - name: Generate Voiceover for Day 10
+        run: python scripts/generate_voiceover.py 10
 
-      - name: Render Remotion Video Reel (MP4)
+      - name: Render Remotion Video Reel (video.mp4)
         run: |
-          npx remotion render src/index.ts NotesBeeReel out/NotesBee_Day_1.mp4
+          npx remotion render src/index.ts NotesBeeReel out/video.mp4 --props='{"day":10}'
 
-      - name: Render Remotion Cover Thumbnail (JPEG)
+      - name: Render Remotion Cover Thumbnail (thumbnail.jpeg)
         run: |
-          npx remotion still src/index.ts NotesBeeThumbnail out/NotesBee_Day_1.jpeg --image-format=jpeg --quality=95 --props='{"day":1}'
+          npx remotion still src/index.ts NotesBeeThumbnail out/thumbnail.jpeg --image-format=jpeg --quality=95 --props='{"day":10}'
 
       - name: Upload Video & Thumbnail Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: NotesBee-Day-1-Output
+          name: NotesBee-Day-10-Output
           path: |
-            out/NotesBee_Day_1.mp4
-            out/NotesBee_Day_1.jpeg
+            out/video.mp4
+            out/thumbnail.jpeg
           retention-days: 7

@@ -133,5 +133,5 @@ async def generate_audio(day: int):
 
 
 if __name__ == "__main__":
-    day_arg = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+    day_arg = int(sys.argv[1]) if len(sys.argv) > 1 else 10
     asyncio.run(generate_audio(day_arg))
