@@ -1,6 +1,5 @@
 export type SceneId =
     | "hook"
-    | "problem"
     | "challenge"
     | "whatsapp_solution"
     | "decoy_privacy"
@@ -32,7 +31,7 @@ export type NotesBeeProps = {
 export const BRAND = {
     bgBase: "#F8FAFF",
     bgCard: "#FFFFFF",
-    bgCardGlass: "rgba(255, 255, 255, 0.92)",
+    bgCardGlass: "rgba(255, 255, 255, 0.94)",
 
     pastelBlue: "#EEF2FF",
     pastelPurple: "#F3E8FF",
@@ -55,20 +54,19 @@ export const BRAND = {
     borderWhite: "#FFFFFF",
     borderSubtle: "#E2E8F0",
     cardShadow:
-        "0 20px 50px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.04)",
+        "0 24px 60px rgba(15, 23, 42, 0.10), 0 6px 16px rgba(15, 23, 42, 0.05)",
 };
 
 export const getDefaultTimeline = (day = 1): TimelineData => {
     const fps = 30;
     const rawScenes: Array<{ id: SceneId; durationInFrames: number }> = [
-        { id: "hook", durationInFrames: 240 },             // 8.0s
-        { id: "problem", durationInFrames: 180 },          // 6.0s
-        { id: "challenge", durationInFrames: 195 },        // 6.5s
-        { id: "whatsapp_solution", durationInFrames: 330 },// 11.0s
-        { id: "decoy_privacy", durationInFrames: 255 },    // 8.5s
-        { id: "ai_enhancer", durationInFrames: 225 },      // 7.5s
-        { id: "backgrounds_1000", durationInFrames: 255 }, // 8.5s
-        { id: "cta", durationInFrames: 225 },              // 7.5s
+        { id: "hook", durationInFrames: 255 },              // 8.5s (Suspense + 4 Curiosity Questions)
+        { id: "challenge", durationInFrames: 115 },         // 3.8s
+        { id: "whatsapp_solution", durationInFrames: 225 }, // 7.5s
+        { id: "decoy_privacy", durationInFrames: 195 },     // 6.5s (Clear Setup -> Snooper vs You)
+        { id: "ai_enhancer", durationInFrames: 135 },       // 4.5s
+        { id: "backgrounds_1000", durationInFrames: 150 },  // 5.0s
+        { id: "cta", durationInFrames: 135 },               // 4.5s
     ];
 
     let currentFrame = 0;
@@ -86,7 +84,7 @@ export const getDefaultTimeline = (day = 1): TimelineData => {
     return {
         day,
         fps,
-        totalFrames: currentFrame, // 1905 frames = 63.5s
+        totalFrames: currentFrame,
         totalSeconds: Number((currentFrame / fps).toFixed(2)),
         scenes,
     };
