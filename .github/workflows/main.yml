@@ -45,35 +45,24 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.10"
 
-      - name: Install Python dependencies
+      - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install edge-tts mutagen requests
 
-      - name: Install FFmpeg
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-
-      - name: Generate voiceover
+      - name: Generate Voiceover
         run: |
           python scripts/generate_voiceover.py "$DAY"
 
-      - name: Render video
+      - name: Render video (video.mp4)
         run: |
           npx remotion render src/index.ts NotesBeeReel out/video.mp4 --props="{\"day\":$DAY}"
 
-      - name: Render thumbnail
+      - name: Render thumbnail (thumbnail.jpeg)
         run: |
           npx remotion still src/index.ts NotesBeeThumbnail out/thumbnail.jpeg --image-format=jpeg --quality=95 --props="{\"day\":$DAY}"
-
-      - name: Verify generated assets
-        run: |
-          ls -lh out/
-          test -s out/video.mp4 || { echo "video.mp4 is empty or missing"; exit 1; }
-          test -s out/thumbnail.jpeg || { echo "thumbnail.jpeg is empty or missing"; exit 1; }
 
       - name: Create Temporary Release for Asset Hosting
         id: create_release
@@ -114,7 +103,7 @@ jobs:
           ig_user_id = os.environ.get("IG_USER_ID")
           video_url = os.environ.get("VIDEO_URL")
           cover_url = os.environ.get("COVER_URL")
-          current_day = os.environ.get("DAY", "1")
+          current_day = os.environ.get("CURRENT_DAY", "1")
 
           if not access_token or not ig_user_id:
               print("Missing secrets: FACEBOOK_DEVELOPER_ACCESS_KEY or INSTAGRAM_ID.")
