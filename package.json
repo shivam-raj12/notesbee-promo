@@ -1,0 +1,25 @@
+{
+  "name": "notesbee-100days-reel",
+  "version": "1.0.0",
+  "description": "100 Days Challenge automated 2D Motion Graphics Reel for NotesBee",
+  "private": true,
+  "scripts": {
+    "dev": "remotion studio src/index.ts",
+    "start": "remotion studio src/index.ts",
+    "upgrade": "remotion upgrade",
+    "voiceover": "python scripts/generate_voiceover.py 1",
+    "render": "remotion render src/index.ts NotesBeeReel out/NotesBee_Reel.mp4",
+    "daily": "python scripts/generate_voiceover.py 1 && remotion render src/index.ts NotesBeeReel out/NotesBee_Day_1.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.533",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.533"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "typescript": "5.5.4"
+  }
+}
