@@ -44,7 +44,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.11"
 
       - name: Install Python Dependencies
         run: |
@@ -59,22 +59,10 @@ jobs:
         run: |
           npx remotion render src/index.ts NotesBeeReel out/video.mp4 --props="{\"day\":$DAY}"
 
-      - name: Recreate YouTube OAuth Credentials
-        env:
-          CLIENT_SECRETS_DATA: ${{ secrets.CLIENT_SECRETS_JSON }}
-          TOKEN_DATA: ${{ secrets.TOKEN_JSON }}
-        run: |
-          cat << 'EOF' > client_secrets.json
-          $CLIENT_SECRETS_DATA
-          EOF
-
-          cat << 'EOF' > token.json
-          $TOKEN_DATA
-          EOF
-
       - name: Publish Video to YouTube via Data API v3
         env:
           CURRENT_DAY: ${{ env.DAY }}
+          TOKEN_JSON: ${{ secrets.TOKEN_JSON }}
         run: |
           python - << 'EOF'
           import os
@@ -89,18 +77,25 @@ jobs:
           SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 
           def authenticate():
-              if not os.path.exists("token.json"):
-                  print("Error: token.json file is missing.")
+              token_str = os.environ.get("TOKEN_JSON", "").strip()
+              if not token_str:
+                  print("Error: TOKEN_JSON secret is empty or not set in GitHub Actions Secrets!")
                   sys.exit(1)
 
-              creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+              try:
+                  token_info = json.loads(token_str)
+              except json.JSONDecodeError as e:
+                  print(f"Error: TOKEN_JSON is not valid JSON. Details: {e}")
+                  sys.exit(1)
+
+              creds = Credentials.from_authorized_user_info(token_info, SCOPES)
 
               if not creds or not creds.valid:
                   if creds and creds.expired and creds.refresh_token:
                       print("Refreshing expired access token...")
                       creds.refresh(Request())
                   else:
-                      print("Error: Valid refresh token missing in token.json.")
+                      print("Error: Valid refresh token missing in TOKEN_JSON.")
                       sys.exit(1)
 
               return build("youtube", "v3", credentials=creds)
@@ -179,11 +174,6 @@ jobs:
           if __name__ == "__main__":
               main()
           EOF
-
-      - name: Clean up temporary OAuth files
-        if: always()
-        run: |
-          rm -f client_secrets.json token.json
 
       - name: Increment and commit youtube-day.json
         if: success()
