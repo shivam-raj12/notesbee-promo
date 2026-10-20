@@ -184,4 +184,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add youtube-day.json
           git commit -m "chore: increment youtube day to $NEXT_DAY [skip ci]"
-          git push
+          for i in {1..5}; do
+            git pull --rebase origin ${{ github.ref_name }} && git push && break
+            echo "Push rejected by remote, retrying in 3 seconds (attempt $i/5)..."
+            sleep 3
+          done
