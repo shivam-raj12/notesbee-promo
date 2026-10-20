@@ -2,8 +2,7 @@ name: Daily NotesBee Video Generator & YouTube Publisher
 
 on:
   schedule:
-    # Runs daily at 18:30 UTC
-    - cron: '30 18 * * *'
+    - cron: '0 19 * * *'
   workflow_dispatch:
 
 concurrency:
