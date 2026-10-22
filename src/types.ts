@@ -1,10 +1,8 @@
 export type SceneId =
     | "hook"
     | "challenge"
-    | "whatsapp_solution"
-    | "decoy_privacy"
-    | "ai_enhancer"
-    | "backgrounds_1000"
+    | "analytics"
+    | "privacy"
     | "cta";
 
 export interface SceneTiming {
@@ -31,15 +29,6 @@ export type NotesBeeProps = {
 export const BRAND = {
     bgBase: "#F8FAFF",
     bgCard: "#FFFFFF",
-    bgCardGlass: "rgba(255, 255, 255, 0.94)",
-
-    pastelBlue: "#EEF2FF",
-    pastelPurple: "#F3E8FF",
-    pastelMint: "#ECFDF5",
-    pastelAmber: "#FFFBEB",
-    pastelPink: "#FDF2F8",
-    pastelDanger: "#FEF2F2",
-
     navyText: "#0F172A",
     slateMuted: "#475569",
     amber: "#D97706",
@@ -48,9 +37,12 @@ export const BRAND = {
     whatsappSoft: "#D1FAE5",
     indigo: "#6366F1",
     purple: "#8B5CF6",
-    rose: "#EC4899",
     danger: "#EF4444",
-
+    pastelMint: "#ECFDF5",
+    pastelAmber: "#FFFBEB",
+    pastelBlue: "#EEF2FF",
+    pastelPink: "#FDF2F8",
+    pastelDanger: "#FEF2F2",
     borderWhite: "#FFFFFF",
     borderSubtle: "#E2E8F0",
     cardShadow:
@@ -60,13 +52,11 @@ export const BRAND = {
 export const getDefaultTimeline = (day = 1): TimelineData => {
     const fps = 30;
     const rawScenes: Array<{ id: SceneId; durationInFrames: number }> = [
-        { id: "hook", durationInFrames: 255 },              // 8.5s (Suspense + 4 Curiosity Questions)
-        { id: "challenge", durationInFrames: 115 },         // 3.8s
-        { id: "whatsapp_solution", durationInFrames: 225 }, // 7.5s
-        { id: "decoy_privacy", durationInFrames: 195 },     // 6.5s (Clear Setup -> Snooper vs You)
-        { id: "ai_enhancer", durationInFrames: 135 },       // 4.5s
-        { id: "backgrounds_1000", durationInFrames: 150 },  // 5.0s
-        { id: "cta", durationInFrames: 135 },               // 4.5s
+        { id: "hook", durationInFrames: 210 },      // 7.0s (Relationship question hook)
+        { id: "challenge", durationInFrames: 90 },     // 3.0s (Day N counter)
+        { id: "analytics", durationInFrames: 225 },    // 7.5s (WhatsApp UI + Reply speed/effort)
+        { id: "privacy", durationInFrames: 165 },      // 5.5s (100% on phone, zero cloud)
+        { id: "cta", durationInFrames: 120 },          // 4.0s (Play Store & Bio)
     ];
 
     let currentFrame = 0;
@@ -84,7 +74,7 @@ export const getDefaultTimeline = (day = 1): TimelineData => {
     return {
         day,
         fps,
-        totalFrames: currentFrame,
+        totalFrames: currentFrame, // ~27 seconds total for high retention!
         totalSeconds: Number((currentFrame / fps).toFixed(2)),
         scenes,
     };
