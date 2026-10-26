@@ -16,37 +16,50 @@ def get_scenes(day: int):
         {
             "id": "hook",
             "tts_text": (
-                "क्या आपकी भी गर्लफ्रेंड, बॉयफ्रेंड या क्रश आपको इग्नोर करके "
-                "बस सीन पर छोड़ रहा है? और समझ नहीं आ रहा कि वो सच में "
-                "बिजी हैं... या एफर्ट ही खत्म हो गया है?"
+                "WhatsApp chat export की है कभी? मिलती है ऐसी boring text file! "
+                "पर सोचो अगर इसी से पता चले कि कौन late reply करता है, "
+                "कौन कितने words लिखता है और effort कौन डाल रहा है!"
             ),
         },
         {
             "id": "challenge",
             "tts_text": (
-                f"ये है Day {day} मेरे ज़ीरो ऐड-बजट चैलेंज का!"
+                f"ये है Day {day} out of 100, मेरे Zero Ad-Budget Challenge का, "
+                "अपने app NotesBee को grow करने के लिए!"
             ),
         },
         {
-            "id": "analytics",
+            "id": "whatsapp_solution",
             "tts_text": (
-                "NotesBee आपकी WhatsApp चैट एक्सपोर्ट को एक रियल चैट में बदल देता है! "
-                "और इसके स्मार्ट एनालिटिक्स में साफ दिखता है — किसने सबसे ज्यादा मैसेज भेजे, "
-                "किसके सबसे ज्यादा वर्ड्स हैं, रिप्लाई के बीच का गैप, मीडिया शेयर, और भी बहुत कुछ!"
+                "NotesBee उस text file को असली WhatsApp chat में बदल देता है! "
+                "और Smart Analytics में मिलती है हर message और reply की पूरी report!"
             ),
         },
         {
-            "id": "privacy",
+            "id": "decoy_privacy",
             "tts_text": (
-                "सबसे बड़ी बात? आपका डेटा कहीं क्लाउड पर अपलोड नहीं होता। "
-                "सौ परसेंट डेटा आपके फोन के अंदर सिक्योर रहता है!"
+                "Secret notes पर password के साथ Fake Title और Description लगाओ, "
+                "ताकि दूसरों को दिखे सिर्फ एक simple grocery list!"
+            ),
+        },
+        {
+            "id": "ai_enhancer",
+            "tts_text": (
+                "Grammar हो या writing tone, AI Enhancer से अपनी writing बेहतर बनाओ बस एक tap में!"
+            ),
+        },
+        {
+            "id": "backgrounds_1000",
+            "tts_text": (
+                "साथ में 1,000 से ज़्यादा beautiful backgrounds, "
+                "real-time collaboration और instant cloud sync भी!"
             ),
         },
         {
             "id": "cta",
             "tts_text": (
-                "NotesBee अभी Google Play Store से डाउनलोड करो — लिंक बायो में है! "
-                "और जर्नी के लिए फॉलो करना मत भूलना!"
+                "NotesBee अभी Google Play Store से download करो, link bio में है! "
+                "और 100-day journey के लिए follow ज़रूर करना!"
             ),
         },
     ]
@@ -61,7 +74,7 @@ async def generate_audio(day: int):
     timeline_scenes = []
     current_frame = 0
 
-    print(f"🐝 Generating Hindi Voiceover ({VOICE} @ {RATE}) for DAY {day}/100...")
+    print(f"🐝 Generating Fast Hindi Voiceover ({VOICE} @ {RATE}) for DAY {day}/100...")
 
     for index, scene in enumerate(scenes):
         filename = f"scene_{index}_{scene['id']}.mp3"
@@ -71,6 +84,7 @@ async def generate_audio(day: int):
         await communicate.save(filepath)
 
         audio_info = MP3(filepath)
+        # Trim 0.35s of trailing dead silence that edge-tts adds at the end of MP3s
         trimmed_sec = max(1.5, audio_info.info.length - 0.35)
         duration_frames = math.ceil(trimmed_sec * FPS)
 
