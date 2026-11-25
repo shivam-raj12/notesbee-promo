@@ -149,7 +149,7 @@ jobs:
               time.sleep(delay)
               status_res = requests.get(
                   f"{base_url}/{container_id}",
-                  params={"fields": "status_code", "access_token": access_token}
+                  params={"fields": "status_code,status", "access_token": access_token}
               ).json()
 
               status_code = status_res.get("status_code")
